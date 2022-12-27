@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Главная страница</title>
+    <link type="text/css" rel="stylesheet" href="{% static 'app/css/index.css' %}">
+</head>
+<body>
+
+{% if request.user.is_authenticated%}
+
+<a href="{% url 'logout' %}">Выйти</a>
+{% if img_obj %}
+
+<div class="ims">
+    <div>
+        <h5>Исходное изображение</h5>
+        <img src="{{ img_obj.image.url}}" alt="connect" style="max-height:300px">
+    </div>
+
+    <div>
+        <h5>Обработанное изображение</h5>
+        <img src="{% static 'app/images/new.png' %}" alt="connect" style="max-height:300px"><br>
+    </div>
+</div>
+
+<div class="sometext">
+    <h5>Полученный текст:</h5><br/>
+    <div id="mytext">{{text}}</div>
+    <button id="print_btn">Печать текста в PDF</button>
+</div>
+
+{% endif %}
+
+<div class="my_form">
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Загрузить изображение</button>
+    </form>
+
+</div>
+
+<script src="{% static 'app/js/index.js' %}"></script>
+
+{% else %}
+
+<div>
+    <h5>Для использования сервиса необходимо войти в систему!</h5>
+</div>
+
+{% endif %}
+
+</body>
+</html>

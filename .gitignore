@@ -1,0 +1,4 @@
+.idea/
+denoiseim/media/
+*.sqlite3
+*.png
