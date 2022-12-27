@@ -2,3 +2,9 @@
 denoiseim/media/
 *.sqlite3
 *.png
+*.zip
+doc_denoising/denoising_dirty_documents/
+doc_denoising/screens
+*.jpg
+*.docx
+
