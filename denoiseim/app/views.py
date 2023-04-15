@@ -1,3 +1,4 @@
+import pandas as pd
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.views import LoginView
@@ -5,8 +6,9 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import CreateView
+from sklearn.cluster import DBSCAN
 
-from .forms import ImageForm, RegisterUserForm
+from .forms import ImageForm, RegisterUserForm, CSVForm
 
 from PIL import Image
 from pytesseract import pytesseract
@@ -75,3 +77,39 @@ class MainView(View):
 
             return render(request, 'app/index.html',
                           {'form': form, 'img_obj': img_obj, "text": get_text_from_img(res_filepath)})
+
+
+class DBSCANView(View):
+    def get(self, request):
+        return render(request, "app/dbscan_template.html", context={"form": CSVForm()})
+
+    def post(self, request):
+        form = CSVForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+
+            file_obj = form.instance
+
+            nodes_df = pd.read_csv(file_obj.file.url[1:])
+            print(nodes_df)
+
+            af = DBSCAN(eps=file_obj.eps, min_samples=file_obj.min_samples).fit(nodes_df)
+            res = []
+            nodes_df["cluster"] = af.labels_
+
+            if max(af.labels_) != -1:
+                for i in range(max(af.labels_) + 1):
+                    df = nodes_df[nodes_df["cluster"] == i]
+                    res.append([
+                        df["x"].to_list(),
+                        df["y"].to_list(),
+                        df["z"].to_list()
+                    ])
+            else:
+                res.append([
+                    nodes_df["x"].to_list(),
+                    nodes_df["y"].to_list(),
+                    nodes_df["z"].to_list()
+                ])
+            return render(request, 'app/dbscan_template.html',
+                          {'form': form, 'file_obj': file_obj, "points": res})

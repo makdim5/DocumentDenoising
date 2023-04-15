@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>DBSCAN</title>
+    <link type="text/css" rel="stylesheet" href="{% static 'app/css/index.css' %}">
+</head>
+<body>
+
+{% if request.user.is_authenticated %}
+
+    <a href="{% url 'logout' %}">Выйти</a>
+    {% if file_obj %}
+
+
+        <div class="sometext">
+            <div id="my_dataviz"></div>
+        </div>
+
+    {% endif %}
+
+    <div class="my_form">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Загрузить csv файл</button>
+        </form>
+
+    </div>
+
+    <script src="https://cdn.plot.ly/plotly-2.20.0.min.js" charset="utf-8"></script>
+    <script>
+        var points = {{ points }}
+
+        var data = points.map(function (item) {
+            return {
+                x: item[0], y: item[1], z: item[2],
+                mode: 'markers',
+                marker: {
+                    opacity: 0.8
+                },
+                type: 'scatter3d'
+            }
+        });
+        var layout = {
+            margin: {
+                l: 0,
+                r: 0,
+                b: 0,
+                t: 0
+            }
+        };
+        Plotly.newPlot('my_dataviz', data, layout);
+
+        function createTable(tableHeads, tableData) {
+            var table = document.createElement('table');
+            var tableHead = document.createElement('thead');
+            var tableBody = document.createElement('tbody');
+
+            var row = document.createElement('tr');
+
+            tableHeads.forEach(function (head) {
+                var cell = document.createElement('th');
+                cell.appendChild(document.createTextNode(head));
+                row.appendChild(cell);
+            });
+
+            tableHead.appendChild(row);
+
+            table.appendChild(tableHead);
+
+            tableData.forEach(function (rowData) {
+                var row = document.createElement('tr');
+
+                rowData.forEach(function (cellData) {
+                    var cell = document.createElement('td');
+                    cell.appendChild(document.createTextNode(cellData));
+                    row.appendChild(cell);
+                });
+
+                tableBody.appendChild(row);
+            });
+
+            table.appendChild(tableBody);
+            return table;
+        }
+
+
+        for (let i = 0; i < points.length; i++) {
+            document.body.appendChild(document.createTextNode("Класс(trace) - " + i));
+            let tableData = [];
+            for (let index = 0; index < points[i][0].length; index++) {
+                tableData.push([points[i][0][index], points[i][1][index], points[i][2][index]])
+            }
+            document.body.appendChild(createTable(["x", "y", "z"], tableData));
+        }
+
+
+    </script>
+
+{% else %}
+
+    <div>
+        <h5>Для использования сервиса необходимо войти в систему!</h5>
+    </div>
+
+{% endif %}
+
+</body>
+</html>
