@@ -17,9 +17,9 @@ from keras.models import Model
 from keras import Input
 from keras.layers import BatchNormalization, Conv2D, MaxPooling2D, Dropout, UpSampling2D, Flatten, Dense, Reshape
 
-DIRTY_PATH = "denoising_dirty_documents/train/train/"
-CLEANED_PATH = "denoising_dirty_documents/train_cleaned/train_cleaned/"
-TEST_PATH = "denoising_dirty_documents/test/test/"
+DIRTY_PATH = "denoising-dirty-documents/train/train/"
+CLEANED_PATH = "denoising-dirty-documents/train_cleaned/train_cleaned/"
+TEST_PATH = "denoising-dirty-documents/test/test/"
 
 
 def get_images_paths(path):

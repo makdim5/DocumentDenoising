@@ -1,4 +1,3 @@
-import os
 import shutil
 from http.server import BaseHTTPRequestHandler
 from http.server import HTTPServer
@@ -6,13 +5,10 @@ from http.server import HTTPServer
 import logging
 
 
-
 class ImageDenoiserHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         self.send_response(200)
-
-
 
     def do_POST(self):
         content_len = int(self.headers.get('Content-Length'))
@@ -39,14 +35,13 @@ def run(server_class=HTTPServer, handler_class=BaseHTTPRequestHandler):
     server_address = ('0.0.0.0', 80)
     httpd = server_class(server_address, handler_class)
     try:
-        logging.info(f"Server startes at {server_address}")
+        logging.info(f"Server is running at {server_address}")
         httpd.serve_forever()
     except KeyboardInterrupt:
         httpd.server_close()
 
 
 if __name__ == "__main__":
-    os.system("pip list")
     logging.getLogger().setLevel(logging.INFO)
     formatter = logging.Formatter('%(asctime)s - %(message)s',
                                   datefmt='%d-%b-%y %H:%M:%S')
