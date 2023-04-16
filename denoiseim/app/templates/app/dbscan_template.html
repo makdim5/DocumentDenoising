@@ -5,33 +5,60 @@
     <meta charset="UTF-8">
     <title>DBSCAN</title>
     <link type="text/css" rel="stylesheet" href="{% static 'app/css/index.css' %}">
+    <link type="text/css" rel="stylesheet" href="{% static 'app/css/table_styles.css' %}">
 </head>
-<body>
+<body style="background-repeat: no-repeat;
+        background-size: cover;background-image: url('{% static 'app/images/background.jpg' %}');">
 
+
+<div class="log_out1" style="top: 1%;left: 1%;">
+    <a href="{% url 'logout' %}">Выйти</a>
+</div>
+<div class="log_out1" style="top: 1%;right: 1%;background-color: blueviolet">
+    <a href="{% url 'main' %}">Очистка документов</a>
+</div>
 {% if request.user.is_authenticated %}
 
-    <a href="{% url 'logout' %}">Выйти</a>
     {% if file_obj %}
+        <div class="general" style="display: flex;background: rgba(255, 255, 255, .8);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);justify-content: space-around">
+            <div style="max-height: 700px;overflow: auto;margin: 5px;padding: 5px;display: flex; flex-direction: column;">
+                <div id="my_dataviz" style="width: 500px;height: 500px">
+                </div>
 
+                <div class="my_form" style="margin-top: 20px">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button type="submit">Загрузить csv файл</button>
+                    </form>
 
-        <div class="sometext">
-            <div id="my_dataviz"></div>
+                </div>
+            </div>
+
+            <div style="max-height: 800px;overflow: auto;margin: 5px;min-width: 400px" id="tables"></div>
         </div>
+    {% else %}
+
+        <div class="my_form" style="margin-top: 20px">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Загрузить csv файл</button>
+            </form>
+
+        </div>
+
 
     {% endif %}
 
-    <div class="my_form">
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Загрузить csv файл</button>
-        </form>
 
-    </div>
 
     <script src="https://cdn.plot.ly/plotly-2.20.0.min.js" charset="utf-8"></script>
     <script>
-        var points = {{ points }}
+        var points =
+        {{ points }}
 
         var data = points.map(function (item) {
             return {
@@ -86,14 +113,16 @@
             return table;
         }
 
+        var table_div = document.getElementById("tables");
+
 
         for (let i = 0; i < points.length; i++) {
-            document.body.appendChild(document.createTextNode("Класс(trace) - " + i));
+            table_div.appendChild(document.createTextNode("Класс(trace) - " + i));
             let tableData = [];
             for (let index = 0; index < points[i][0].length; index++) {
                 tableData.push([points[i][0][index], points[i][1][index], points[i][2][index]])
             }
-            document.body.appendChild(createTable(["x", "y", "z"], tableData));
+            table_div.appendChild(createTable(["x", "y", "z"], tableData));
         }
 
 

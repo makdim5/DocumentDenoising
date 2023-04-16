@@ -22,7 +22,7 @@ class RegisterUserForm(UserCreationForm):
         model = User
         fields = ('username', 'password1', 'password2')
         widgets = {
-            'username': forms.TextInput(attrs={'class': 'form-input'}),
-            'password1': forms.PasswordInput(attrs={'class': 'form-input'}),
-            'password2': forms.PasswordInput(attrs={'class': 'form-input'}),
+            'username': forms.TextInput(),
+            'password1': forms.PasswordInput(),
+            'password2': forms.PasswordInput(),
         }

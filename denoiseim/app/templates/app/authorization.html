@@ -1,19 +1,29 @@
 <!DOCTYPE html>
 {% load static %}
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
-    <title>{{title}}</title>
+    <title>{{ title }}</title>
+    <link type="text/css" rel="stylesheet" href="{% static 'app/css/entry.css' %}">
 </head>
 <body>
-<h1>{{title}}</h1>
+<div style="background-image: url('{% static 'app/images/background.jpg' %}');" class="auth_body">
+    <div class="auth_area">
+        <h1 style="text-align: center; font-size: 40px;margin-bottom: 10px">{{ title }}</h1>
 
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Войти</button>
-</form>
+        <div class="my_form">
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Войти</button>
+            </form>
+        </div>
 
-<button><a href="{% url 'register' %}">Регистрация</a></button>
+        <div style="margin-top: 10px; display:flex;justify-content: center">
+            <button><a href="{% url 'register' %}">Регистрация</a></button>
+        </div>
+
+    </div>
+</div>
 </body>
 </html>

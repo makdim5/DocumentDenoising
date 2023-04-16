@@ -84,32 +84,35 @@ class DBSCANView(View):
         return render(request, "app/dbscan_template.html", context={"form": CSVForm()})
 
     def post(self, request):
-        form = CSVForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
+        try:
+            form = CSVForm(request.POST, request.FILES)
+            if form.is_valid():
+                form.save()
 
-            file_obj = form.instance
+                file_obj = form.instance
 
-            nodes_df = pd.read_csv(file_obj.file.url[1:])
-            print(nodes_df)
+                nodes_df = pd.read_csv(file_obj.file.url[1:])
+                print(nodes_df)
 
-            af = DBSCAN(eps=file_obj.eps, min_samples=file_obj.min_samples).fit(nodes_df)
-            res = []
-            nodes_df["cluster"] = af.labels_
+                af = DBSCAN(eps=file_obj.eps, min_samples=file_obj.min_samples).fit(nodes_df)
+                res = []
+                nodes_df["cluster"] = af.labels_
 
-            if max(af.labels_) != -1:
-                for i in range(max(af.labels_) + 1):
-                    df = nodes_df[nodes_df["cluster"] == i]
+                if max(af.labels_) != -1:
+                    for i in range(max(af.labels_) + 1):
+                        df = nodes_df[nodes_df["cluster"] == i]
+                        res.append([
+                            df["x"].to_list(),
+                            df["y"].to_list(),
+                            df["z"].to_list()
+                        ])
+                else:
                     res.append([
-                        df["x"].to_list(),
-                        df["y"].to_list(),
-                        df["z"].to_list()
+                        nodes_df["x"].to_list(),
+                        nodes_df["y"].to_list(),
+                        nodes_df["z"].to_list()
                     ])
-            else:
-                res.append([
-                    nodes_df["x"].to_list(),
-                    nodes_df["y"].to_list(),
-                    nodes_df["z"].to_list()
-                ])
-            return render(request, 'app/dbscan_template.html',
-                          {'form': form, 'file_obj': file_obj, "points": res})
+                return render(request, 'app/dbscan_template.html',
+                              {'form': form, 'file_obj': file_obj, "points": res})
+        except:
+            return render(request, "app/dbscan_template.html", context={"form": CSVForm()})
