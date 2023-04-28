@@ -2,6 +2,7 @@ FROM python:3.10 AS base
 COPY model_data model_data
 ADD denoising.py denoising.py
 ADD main.py server.py
+ADD requirements.txt requirements.txt
 
 # Setup env
 ENV LANG C.UTF-8
@@ -12,19 +13,11 @@ ENV PYTHONFAULTHANDLER 1
 
 FROM base AS python-deps
 
-# Install pipenv and compilation dependencies
-RUN pip install pipenv
-
-ADD Pipfile Pipfile
-ADD Pipfile.lock Pipfile.lock
 
 RUN apt-get update
 RUN apt-get install ffmpeg libsm6 libxext6  -y
 
-RUN PIPENV_VENV_IN_PROJECT=1 pipenv install --deploy
-RUN pipenv install opencv-python
-
-
+RUN pip install -r requirements.txt
 
 
 EXPOSE 80
