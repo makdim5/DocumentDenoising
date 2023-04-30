@@ -9,12 +9,13 @@
 <body style="background-repeat: no-repeat;
     background-size: cover;background-image: url('{% static 'app/images/background.jpg' %}');">
 
-<div class="log_out1" style="top: 1%;left: 1%;">
-    <a href="{% url 'logout' %}">Выйти</a>
+<div class="log_out1" style="top: 1%;right: 1%;background: red">
+    <a title="Выйти" href="{% url 'logout' %}">X</a>
 </div>
-<div class="log_out1" style="top: 1%;right: 1%;background-color: dodgerblue">
-    <a href="{% url 'dbscan' %}">Кластеризация точек</a>
-</div>
+<select onchange="window.location.href=this.options[this.selectedIndex].value" class="log_out1" style="top: 1%;left: 1%;display: flex;color: white;font-size: 20px">
+    <option value="{% url 'main' %}" label="Очистка документов" >
+    <option value="{% url 'dbscan' %}" label="Кластеризация точек">
+</select>
 {% if request.user.is_authenticated %}
 
 

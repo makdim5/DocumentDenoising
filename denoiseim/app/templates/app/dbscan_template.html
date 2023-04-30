@@ -11,12 +11,13 @@
         background-size: cover;background-image: url('{% static 'app/images/background.jpg' %}');">
 
 
-<div class="log_out1" style="top: 1%;left: 1%;">
-    <a href="{% url 'logout' %}">Выйти</a>
+<div class="log_out1" style="top: 1%;right: 1%;background: red">
+    <a title="Выйти" href="{% url 'logout' %}">X</a>
 </div>
-<div class="log_out1" style="top: 1%;right: 1%;background-color: blueviolet">
-    <a href="{% url 'main' %}">Очистка документов</a>
-</div>
+<select onchange="window.location.href=this.options[this.selectedIndex].value" class="log_out1" style="top: 1%;left: 1%;display: flex;color: white;font-size: 20px">
+    <option value="{% url 'dbscan' %}" label="Кластеризация точек">
+    <option value="{% url 'main' %}" label="Очистка документов" >
+</select>
 {% if request.user.is_authenticated %}
 
     {% if file_obj %}
